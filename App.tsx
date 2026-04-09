@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import { Button,FlatList, StyleSheet, Text, TextInput, ToastAndroid, View } from 'react-native';
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import axios, { Axios, AxiosError, AxiosResponse } from 'axios';
 
 export default function App() {
   const [nome, setNome] = useState<string>("");
@@ -40,6 +40,16 @@ export default function App() {
             "https://aula09042026-default-rtdb.firebaseio.com/contato.json"
           );
           console.log( "Resposta: ", response.data)
+
+          //Gravar dentro da lista
+          const listaTemp =[];
+          for (const chave in response.data){
+            const contato = response.data[chave];
+            contato.id = chave;
+            listaTemp.push(contato);
+          }
+          setLista( listaTemp )
+
           ToastAndroid.show("Contatos carregados com sucesso", ToastAndroid.LONG);
         } catch( error : any ) { 
           ToastAndroid.show("Erro ao carregar os contatos: " + error.message, ToastAndroid.LONG);
@@ -54,6 +64,17 @@ export default function App() {
               <Text>{itemProps.item.nome}</Text>
               <Text>{itemProps.item.email}</Text>
               <Text>{itemProps.item.telefone}</Text>
+
+              <Button title="Del" onPress={async ()=>{
+                  
+                  try { 
+                    await axios.delete(
+                    `https://aula09042026-default-rtdb.firebaseio.com/contato/${itemProps.item.id}.json`)
+                    ToastAndroid.show("Objeto removido", ToastAndroid.LONG);
+                  } catch ( err : any ) { 
+                    console.log( err.message );
+                  }
+              }}/>
           </View>
         )
       }}/>
