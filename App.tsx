@@ -1,8 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
-import { Button, FlatList, ListRenderItemInfo, StyleSheet, Text, TextInput, ToastAndroid, View } from 'react-native';
+import { Button, FlatList, ListRenderItemInfo,Modal, StyleSheet, Text, TextInput, ToastAndroid, View } from 'react-native';
 import { useContatoControl, MensagemFunction } from './src/control/useContatoControl';
 import ContatoDetail from './src/components/ContatoDetail';
 import { Contato } from './src/model/contato';
+import { useState } from 'react';
+import axios, { AxiosResponse } from 'axios';
+
+//para guardar inforção de senha e email
+const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [token, setToken] = useState<string | null>( null );
+
 
 export default function App() {
   const mensagem : MensagemFunction = ( texto, duracao = ToastAndroid.LONG ) => {
@@ -19,6 +27,30 @@ export default function App() {
 
   return (
     <View style={styles.container}>
+      <Modal visible={token ===null}>
+        <View style={styles.container}>
+          <TextInput placeholder="Email"
+          value={username}/>
+          <TextInput placeholder="Senha" secureTextEntry={true} 
+          value={password} onChangeText={setPassword}/>
+          <Button title='login' onPress={()=>{
+            const obj ={email: username, password, returnSecureToken: true};
+            try{
+              const response : AxiosResponse<any, any>= await axios.post(
+              "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyB_N7ENKJBBPfo_MW-kBM-RoTsh-gVZ-RE",
+              obj
+            );
+             setToken(response.data.idToken);
+              console.log("Token: ", response.data.idToken);
+
+            }catch(err : any){
+              console.log("Erro ao fazer a autenticacao: ", err.message);
+              ToastAndroid.show("Erro: " + err.message, ToastAndroid.LONG);
+            }
+            
+          }}/>
+        </View>
+      </Modal>
       <Text>Gestão de Contatos</Text>
       <TextInput placeholder="Nome Completo" value={nome} onChangeText={setNome}/>
       <TextInput placeholder="Email" value={email} onChangeText={setEmail}/>
