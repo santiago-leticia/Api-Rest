@@ -1,10 +1,20 @@
-POST https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyB_N7ENKJBBPfo_MW-kBM-RoTsh-gVZ-RE HTTP/1.1
+POST https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyD6jWCFpnFmLmP1qJXAhwVAH6oQhncKVBk HTTP/1.1
 Content-Type: application/json
-//qualquer coisa voce pode fazer a pulseirinha para revificar cao voce tem esse acesso 
-
 
 {
     "email": "joao@teste.com",
-    "password":"123456",
-    "returnSecureToken":true
+    "password": "123456",
+    "returnSecureToken": true
+}
+
+
+###
+
+POST https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD6jWCFpnFmLmP1qJXAhwVAH6oQhncKVBk
+Content-Type: application/json
+
+{
+    "email": "joao@teste.com",
+    "password": "123456",
+    "returnSecureToken": true
 }
