@@ -5,6 +5,8 @@ const api = axios.create(
     {baseURL: "https://tdspi-d12cf-default-rtdb.firebaseio.com"}
 );
 
+const apiKey = process.env.EXPO_PLUC_APIKEY;
+
 let apiToken = "";
 
 const salvar = async( obj : Contato ) => {
