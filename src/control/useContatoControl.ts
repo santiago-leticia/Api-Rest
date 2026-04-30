@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Contato } from '../model/contato';
-import axios, { AxiosResponse } from 'axios';
 import api from '../repository/remote/contatoApi';
 
 
