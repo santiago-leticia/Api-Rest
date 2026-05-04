@@ -7,7 +7,11 @@ import Imagens from './Imagens';
 
 const {Navigator, Screen} = createDrawerNavigator();
 
-const Home = () => { 
+interface HomeProps { 
+    token : string | null;
+}
+
+const Home : React.FC<HomeProps> = ( { token } ) => { 
     return (
         <View style={{justifyContent: "center", flex: 1, 
             alignItems: "stretch"}}>
@@ -15,7 +19,9 @@ const Home = () => {
             <Text>Bem vindo a aplicação</Text>
 
             <Navigator>
-                <Screen name="Contatos" component={Contatos} />
+                <Screen name="Contatos">
+                    {( navProps )=><Contatos {...navProps} token={token}/>}
+                </Screen>
                 <Screen name="Produtos" component={Produtos} />
                 <Screen name="Imagens" component={Imagens}/>
             </Navigator>

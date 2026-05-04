@@ -7,6 +7,7 @@ import { Contato } from '../model/contato';
 import { StatusBar } from 'expo-status-bar';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { ParamListBase, RouteProp } from '@react-navigation/native';
 
 const {Screen, Navigator} = createBottomTabNavigator();
 
@@ -60,7 +61,13 @@ const ContatoList : React.FC<ContatoListProps> = ( {carregar, apagar, editar,
     )
 }
 
-const Contatos = () => { 
+interface ContatosProps {
+    route : RouteProp<ParamListBase, "Contatos">;
+    navigation : any;
+    token : string | null;
+}
+
+const Contatos : React.FC<ContatosProps>= ( { navigation, token } ) => { 
     const mensagem : MensagemFunction = ( texto, duracao = ToastAndroid.LONG ) => {
         ToastAndroid.show(texto, duracao);
     };
@@ -70,8 +77,8 @@ const Contatos = () => {
         email, setEmail,
         telefone, setTelefone,
         lista,
-        salvar, carregar, editar, apagar
-    } = useContatoControl( mensagem );
+        salvar, carregar, editar, apagar,
+    } = useContatoControl( mensagem, token );
     
       
     return (
@@ -81,8 +88,8 @@ const Contatos = () => {
                 <Screen name="Contato-Form">
                     {( navProps ) => <ContatoForm
                         nome={nome} setNome={setNome}
-                        email={nome} setEmail={setNome}
-                        telefone={nome} setTelefone={setNome}
+                        email={email} setEmail={setEmail}
+                        telefone={telefone} setTelefone={setTelefone}
                         salvar = {salvar}
                     />}
                 </Screen>

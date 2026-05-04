@@ -1,83 +1,53 @@
-import { StatusBar } from 'expo-status-bar';
-import { Button, FlatList, ListRenderItemInfo,Modal, StyleSheet, Text, TextInput, ToastAndroid, View } from 'react-native';
-import { useContatoControl, MensagemFunction } from './src/control/useContatoControl';
-import ContatoDetail from './src/components/ContatoDetail';
-import { Contato } from './src/model/contato';
+
+import { Button, FlatList, ListRenderItemInfo, Modal, StyleSheet, Text, TextInput, ToastAndroid, View } from 'react-native';
 import { useState } from 'react';
 import axios, { AxiosResponse } from 'axios';
+import {NavigationContainer} from '@react-navigation/native';
+import Home from './src/screen/Home';
+import Autenticacao from './src/screen/Autenticacao';
+import { useAutenticacaoControl } from './src/control/useAutenticacaoControl';
 
-//para guardar inforção de senha e email
-const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [token, setToken] = useState<string | null>( null );
-
+const mensagem = ( texto : string ) => { 
+    ToastAndroid.show( texto, ToastAndroid.LONG );
+}
 
 export default function App() {
-  const mensagem : MensagemFunction = ( texto, duracao = ToastAndroid.LONG ) => {
-    ToastAndroid.show(texto, duracao);
-  };
 
-  const {
-    nome, setNome,
-    email, setEmail,
-    telefone, setTelefone,
-    lista,
-    salvar, carregar, editar, apagar
-  } = useContatoControl( mensagem );
+  const {signIn, signUp, 
+        email, setEmail, 
+        senha, setSenha,
+        token} = useAutenticacaoControl( mensagem );
 
   return (
-    <View style={styles.container}>
-      <Modal visible={token ===null}>
-        <View style={styles.container}>
-          <TextInput placeholder="Email"
-          value={username}/>
-          <TextInput placeholder="Senha" secureTextEntry={true} 
-          value={password} onChangeText={setPassword}/>
-          <Button title='login' onPress={()=>{
-            const obj ={email: username, password, returnSecureToken: true};
-            try{
-              const response : AxiosResponse<any, any>= await axios.post(
-              "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyB_N7ENKJBBPfo_MW-kBM-RoTsh-gVZ-RE",
-              obj
-            );
-             setToken(response.data.idToken);
-              console.log("Token: ", response.data.idToken);
-
-            }catch(err : any){
-              console.log("Erro ao fazer a autenticacao: ", err.message);
-              ToastAndroid.show("Erro: " + err.message, ToastAndroid.LONG);
-            }
-            
-          }}/>
-        </View>
-      </Modal>
-      <Text>Gestão de Contatos</Text>
-      <TextInput placeholder="Nome Completo" value={nome} onChangeText={setNome}/>
-      <TextInput placeholder="Email" value={email} onChangeText={setEmail}/>
-      <TextInput placeholder="Telefone" value={telefone} onChangeText={setTelefone}/>
-
-      <Button title="Salvar" onPress={salvar}/>
-
-      <Button title="Carregar" onPress={carregar} />
-
-      <StatusBar style="auto" />
-      <FlatList data={lista}
-        renderItem={ ( flatProps : ListRenderItemInfo<Contato> ) => 
-            <ContatoDetail mensagem={mensagem} 
-              onEditar={()=>editar(flatProps.item)} 
-              onApagar={()=>apagar(flatProps.item.id)}
-              {...flatProps}/>
-        }
-      />
-    </View>
+    <NavigationContainer>
+      <View style={styles.container}>
+        <Modal visible={token === null}>
+          <Autenticacao estilos={styles} signIn={signIn} signOut={signUp}
+            email={email} setEmail={setEmail} senha={senha} setSenha={setSenha}/>
+        </Modal>
+        <Home token={token}/>
+      </View>
+    </NavigationContainer>
   );
 }
+
+// const obj = {email : username, password, returnSecureToken : true};
+// try { 
+//   const response : AxiosResponse<any, any> = await axios.post(
+//     "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=[apikey]",
+//     obj);
+//   setToken(response.data.idToken);
+//   console.log("Token: ", response.data.idToken);
+// } catch ( err : any ) { 
+//   console.log("Erro ao fazer a autenticacao: ", err.message);
+//   ToastAndroid.show("Erro: " + err.message, ToastAndroid.LONG);
+// }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
+    alignItems: 'stretch',
     justifyContent: 'center',
   },
 });

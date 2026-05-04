@@ -5,29 +5,29 @@ const api = axios.create(
     {baseURL: "https://tdspi-d12cf-default-rtdb.firebaseio.com"}
 );
 
-const apiKey = process.env.EXPO_PLUC_APIKEY;
+const apiKey = process.env.EXPO_PUBLIC_APIKEY;
 
-let apiToken = "";
+let apiToken : string | null = null;
 
 const salvar = async( obj : Contato ) => {
      await api.post(
-        "/contato.json",
+        `/contato.json?auth=${apiToken}`,
         obj );
     // .then(( response : AxiosResponse<any, any>)=>{})
     // .catch(( error : any )=>{})
 }
 
 const atualizar = async( id : string, obj : Contato ) => { 
-    await api.put(`/contato/${id}.json`, obj );
+    await api.put(`/contato/${id}.json?auth=${apiToken}`, obj );
 }
 
 const apagar = async( contatoId : string ) => { 
-    await api.delete(`/contato/${contatoId}.json`)
+    await api.delete(`/contato/${contatoId}.json?auth=${apiToken}`)
 }
 
 const carregar = async() : Promise<Contato[]> => {
     const response : AxiosResponse<any, any> = await api.get(
-        "/contato.json"
+        `/contato.json?auth=${apiToken}`
     );
     console.log( "Resposta: ", response.data);
 
@@ -40,4 +40,8 @@ const carregar = async() : Promise<Contato[]> => {
     return listaTemp;
 }
 
-export default { salvar, atualizar, carregar, apagar };
+const setApiToken = ( token : string ) => {
+    apiToken = token;
+}
+
+export default { salvar, atualizar, carregar, apagar, setApiToken };
