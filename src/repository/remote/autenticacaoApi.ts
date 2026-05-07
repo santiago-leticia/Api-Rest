@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+//nao esta definindno aqui
+
 const apiKey = process.env.EXPO_PUBLIC_APIKEY;
 
 
