@@ -6,6 +6,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import Home from './src/screen/Home';
 import Autenticacao from './src/screen/Autenticacao';
 import { useAutenticacaoControl } from './src/control/useAutenticacaoControl';
+import { MeuContexto } from './src/context/MeuContexto';
 
 const mensagem = ( texto : string ) => { 
     ToastAndroid.show( texto, ToastAndroid.LONG );
@@ -16,18 +17,20 @@ export default function App() {
   const {signIn, signUp, 
         email, setEmail, 
         senha, setSenha,
-        token} = useAutenticacaoControl( mensagem );
+        token, logout} = useAutenticacaoControl( mensagem );
 
   return (
-    <NavigationContainer>
-      <View style={styles.container}>
-        <Modal visible={token === null}>
-          <Autenticacao estilos={styles} signIn={signIn} signOut={signUp}
-            email={email} setEmail={setEmail} senha={senha} setSenha={setSenha}/>
-        </Modal>
-        <Home token={token}/>
-      </View>
-    </NavigationContainer>
+    <MeuContexto.Provider value={{token, logout}}>
+      <NavigationContainer>
+        <View style={styles.container}>
+          <Modal visible={token === null}>
+            <Autenticacao estilos={styles} signIn={signIn} signOut={signUp}
+              email={email} setEmail={setEmail} senha={senha} setSenha={setSenha}/>
+          </Modal>
+          <Home/>
+        </View>
+      </NavigationContainer>
+    </MeuContexto.Provider>
   );
 }
 

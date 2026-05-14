@@ -64,10 +64,9 @@ const ContatoList : React.FC<ContatoListProps> = ( {carregar, apagar, editar,
 interface ContatosProps {
     route : RouteProp<ParamListBase, "Contatos">;
     navigation : any;
-    token : string | null;
 }
 
-const Contatos : React.FC<ContatosProps>= ( { navigation, token } ) => { 
+const Contatos : React.FC<ContatosProps>= ( { navigation } ) => { 
     const mensagem : MensagemFunction = ( texto, duracao = ToastAndroid.LONG ) => {
         ToastAndroid.show(texto, duracao);
     };
@@ -78,7 +77,7 @@ const Contatos : React.FC<ContatosProps>= ( { navigation, token } ) => {
         telefone, setTelefone,
         lista,
         salvar, carregar, editar, apagar,
-    } = useContatoControl( mensagem, token );
+    } = useContatoControl( mensagem );
     
       
     return (

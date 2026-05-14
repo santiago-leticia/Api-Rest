@@ -1,13 +1,13 @@
-import { use, useState } from 'react';
+import { useState, useContext } from 'react';
 import { Contato } from '../model/contato';
 import api from '../repository/remote/contatoApi';
+import { MeuContexto, ContextoInfo } from '../context/MeuContexto';
 
 
 type MensagemFunction = ( texto : string, duracao? : number) => void
 
 const useContatoControl = ( 
-    mensagem : MensagemFunction,
-    token : string | null
+    mensagem : MensagemFunction
 ) => {
     const [id, setId] = useState<string | null>( null );
     const [nome, setNome] = useState<string>("");
@@ -15,8 +15,10 @@ const useContatoControl = (
     const [email, setEmail] = useState<string>("");
     const [lista, setLista] = useState<Contato[]>([]);
 
-    if ( token != null ) {
-        api.setApiToken( token );
+    const contexto : ContextoInfo = useContext( MeuContexto ) 
+
+    if ( contexto.token != null ) {
+        api.setApiToken( contexto.token );
     }
 
 
